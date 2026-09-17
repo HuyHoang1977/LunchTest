@@ -7,6 +7,7 @@ from typing import Any
 from .loader import LabLoader
 from .memory import SimulationMemory
 from .prompts import build_messages
+from .prompts import CASE_GENERATION_PROMPT
 from .providers import ProviderResponse
 from .tools import LabTools
 
@@ -69,23 +70,49 @@ class SimulatorAgent:
             json.dump(self.trace, file, ensure_ascii=False, indent=2)
 
     def generate_cases(self, count: int = 6) -> list[dict[str, Any]]:
-        """Inspect the Lab through several tool turns, then create grounded cases."""
-        observations = []
-        tool_plan = [
-            ("list_files", {}),
-            ("inspect_lab_task", {"task": "TASK 1.1"}),
-            ("inspect_lab_task", {"task": "TASK 2.2"}),
-            ("search_code", {"query": "dispatch_tool_call"}),
-            ("search_code", {"query": "MAX_ITERATIONS"}),
-            ("read_file", {"path": "src/app.py"}),
-        ]
-        for round_number, (name, arguments) in enumerate(tool_plan, 1):
-            result = self.tools.execute(name, arguments)
-            self._record_trace(round_number, name, arguments, result)
-            observations.append({"tool": name, "result": result})
+        """Use the same multi-turn tool loop as chat, then create grounded cases."""
+        observations: list[dict[str, Any]] = []
+        created_cases: list[dict[str, Any]] = []
+        messages = build_messages(
+            self.loader.load_context(),
+            self.memory.context(),
+            f"GENERATE_CASES count={count}\n{CASE_GENERATION_PROMPT}",
+        )
+        for round_number in range(1, self.max_tool_rounds + 1):
+            response: ProviderResponse = self.provider.generate(messages, self.tool_schemas())
+            if response.text:
+                created_cases.extend(self._cases_from_text(response.text))
+                break
+            for call in response.tool_calls or []:
+                name = call["name"]
+                arguments = call.get("arguments", {})
+                result = self.tools.execute(name, arguments)
+                self._record_trace(round_number, name, arguments, result)
+                observations.append({"tool": name, "result": result})
+                if name == "create_case" and result.get("success"):
+                    created_cases.append(result["case"])
+                messages.append({"role": "assistant", "tool_calls": [call]})
+                messages.append({"role": "tool", "name": name, "content": json.dumps(result, ensure_ascii=False)})
+            if len(created_cases) >= count:
+                break
 
-        cases = self._build_case_catalog(observations)
-        return cases[:max(1, count)]
+        if len(created_cases) < count:
+            created_cases.extend(self._build_case_catalog(observations))
+        cases = created_cases[:max(1, count)]
+        self.memory.update(generated_cases=cases)
+        return cases
+
+    @staticmethod
+    def _cases_from_text(text: str) -> list[dict[str, Any]]:
+        try:
+            payload = json.loads(text)
+        except json.JSONDecodeError:
+            return []
+        if isinstance(payload, list):
+            return [case for case in payload if isinstance(case, dict)]
+        if isinstance(payload, dict) and isinstance(payload.get("cases"), list):
+            return [case for case in payload["cases"] if isinstance(case, dict)]
+        return []
 
     def _build_case_catalog(self, observations: list[dict[str, Any]]) -> list[dict[str, Any]]:
         evidence_files = sorted({

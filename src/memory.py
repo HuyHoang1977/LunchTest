@@ -23,6 +23,7 @@ class SimulationMemory:
             "valid_alternatives": [],
             "verification_status": {},
             "current_case": None,
+            "generated_cases": [],
         }
 
     def update(self, **values: Any) -> None:

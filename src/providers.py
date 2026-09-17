@@ -17,6 +17,21 @@ class OfflineProvider:
     """Deterministic provider for local development and tests."""
 
     def generate(self, messages: list[dict[str, Any]], tools: list[dict[str, Any]]) -> ProviderResponse:
+        is_generation = any("GENERATE_CASES" in message.get("content", "") for message in messages)
+        if is_generation:
+            generation_calls = [
+                ("list_files", {}),
+                ("inspect_lab_task", {"task": "TASK 1.1"}),
+                ("inspect_lab_task", {"task": "TASK 2.2"}),
+                ("search_code", {"query": "dispatch_tool_call"}),
+                ("search_code", {"query": "MAX_ITERATIONS"}),
+                ("read_file", {"path": "src/app.py"}),
+            ]
+            tool_turns = sum(message.get("role") == "tool" for message in messages)
+            if tool_turns < len(generation_calls):
+                name, arguments = generation_calls[tool_turns]
+                return ProviderResponse(tool_calls=[{"name": name, "arguments": arguments}])
+            return ProviderResponse(text="Repository inspection complete; create grounded cases from the observations.")
         if any(message.get("role") == "tool" for message in messages):
             return ProviderResponse(
                 text="Mình đã nhận observation từ tool. Hãy dùng kết quả này để chọn bước tiếp theo hoặc kiểm tra một file cụ thể."

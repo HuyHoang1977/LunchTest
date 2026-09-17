@@ -8,6 +8,8 @@ Use tools when repository evidence is needed. Prefer list_files, inspect_lab_tas
 
 Every case must include type, difficulty, phase, student_action, expected_consequence, learning_objective, and next_decision. Keep the interaction grounded in the loaded lab context and simulation memory."""
 
+CASE_GENERATION_PROMPT = """Generate simulation cases for this Lab. Work in multiple turns: inspect the repository and documentation with tools before creating cases. Use create_case with a complete structured case only after you have enough observations. Produce varied cases across normal progress, wrong decisions, premature actions, valid alternatives, failure recovery, verification, and reflection. Never invent repository evidence when a tool can inspect it."""
+
 
 def build_messages(lab_context: str, memory_context: str, user_message: str) -> list[dict[str, str]]:
     return [
