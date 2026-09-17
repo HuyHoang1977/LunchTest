@@ -1,0 +1,158 @@
+[
+  {
+    "case_id": "case_agentic_fit",
+    "type": "DECISION_POINT",
+    "difficulty": 2,
+    "phase": "orientation",
+    "student_action": "Tôi bắt đầu code ngay",
+    "expected_consequence": "Đánh giá Agentic Fit và đọc checkpoint trước khi chọn kiến trúc.",
+    "learning_objective": "Ra quyết định dựa trên bằng chứng của Lab và phục hồi sau sai lầm.",
+    "evidence": "docs/CODELAB.md, src/app.py, src/mcp_server.py, src/prompts.py",
+    "options": [
+      {
+        "id": "A",
+        "label": "Kiểm tra tài liệu và bằng chứng liên quan trước"
+      },
+      {
+        "id": "B",
+        "label": "Tiếp tục bỏ qua checkpoint và đoán kết quả"
+      },
+      {
+        "id": "C",
+        "label": "Chỉ sửa biểu hiện bên ngoài mà không kiểm tra nguyên nhân"
+      }
+    ],
+    "answer": "A",
+    "next_decision": "Bạn sẽ inspect file nào hoặc chạy kiểm tra nào tiếp theo?"
+  },
+  {
+    "case_id": "case_tool_schema",
+    "type": "WRONG_DECISION",
+    "difficulty": 2,
+    "phase": "task_1_2",
+    "student_action": "Tôi khai báo tool nhưng bỏ required parameters",
+    "expected_consequence": "Schema thiếu required field có thể làm tool call không hợp lệ.",
+    "learning_objective": "Ra quyết định dựa trên bằng chứng của Lab và phục hồi sau sai lầm.",
+    "evidence": "docs/CODELAB.md, src/app.py, src/mcp_server.py, src/prompts.py",
+    "options": [
+      {
+        "id": "A",
+        "label": "Kiểm tra tài liệu và bằng chứng liên quan trước"
+      },
+      {
+        "id": "B",
+        "label": "Tiếp tục bỏ qua checkpoint và đoán kết quả"
+      },
+      {
+        "id": "C",
+        "label": "Chỉ sửa biểu hiện bên ngoài mà không kiểm tra nguyên nhân"
+      }
+    ],
+    "answer": "A",
+    "next_decision": "Bạn sẽ inspect file nào hoặc chạy kiểm tra nào tiếp theo?"
+  },
+  {
+    "case_id": "case_dispatcher",
+    "type": "WRONG_DECISION",
+    "difficulty": 2,
+    "phase": "task_2_1",
+    "student_action": "Tôi gọi sai tên tool trong dispatcher",
+    "expected_consequence": "Đối chiếu tên tool với registry và schema trước khi dispatch.",
+    "learning_objective": "Ra quyết định dựa trên bằng chứng của Lab và phục hồi sau sai lầm.",
+    "evidence": "docs/CODELAB.md, src/app.py, src/mcp_server.py, src/prompts.py",
+    "options": [
+      {
+        "id": "A",
+        "label": "Kiểm tra tài liệu và bằng chứng liên quan trước"
+      },
+      {
+        "id": "B",
+        "label": "Tiếp tục bỏ qua checkpoint và đoán kết quả"
+      },
+      {
+        "id": "C",
+        "label": "Chỉ sửa biểu hiện bên ngoài mà không kiểm tra nguyên nhân"
+      }
+    ],
+    "answer": "A",
+    "next_decision": "Bạn sẽ inspect file nào hoặc chạy kiểm tra nào tiếp theo?"
+  },
+  {
+    "case_id": "case_react_loop",
+    "type": "PREMATURE_ACTION",
+    "difficulty": 2,
+    "phase": "task_2_2",
+    "student_action": "LLM trả tool_call xong tôi return luôn",
+    "expected_consequence": "Phải thực thi tool, đưa Observation trở lại LLM rồi mới kết luận.",
+    "learning_objective": "Ra quyết định dựa trên bằng chứng của Lab và phục hồi sau sai lầm.",
+    "evidence": "docs/CODELAB.md, src/app.py, src/mcp_server.py, src/prompts.py",
+    "options": [
+      {
+        "id": "A",
+        "label": "Kiểm tra tài liệu và bằng chứng liên quan trước"
+      },
+      {
+        "id": "B",
+        "label": "Tiếp tục bỏ qua checkpoint và đoán kết quả"
+      },
+      {
+        "id": "C",
+        "label": "Chỉ sửa biểu hiện bên ngoài mà không kiểm tra nguyên nhân"
+      }
+    ],
+    "answer": "A",
+    "next_decision": "Bạn sẽ inspect file nào hoặc chạy kiểm tra nào tiếp theo?"
+  },
+  {
+    "case_id": "case_failure_recovery",
+    "type": "FAILURE_RECOVERY",
+    "difficulty": 2,
+    "phase": "task_3_1",
+    "student_action": "Lệnh test bị lỗi nhưng tôi vẫn ghi pass",
+    "expected_consequence": "Đọc traceback và chạy lại kiểm tra nhỏ trước khi cập nhật trace.",
+    "learning_objective": "Ra quyết định dựa trên bằng chứng của Lab và phục hồi sau sai lầm.",
+    "evidence": "docs/CODELAB.md, src/app.py, src/mcp_server.py, src/prompts.py",
+    "options": [
+      {
+        "id": "A",
+        "label": "Kiểm tra tài liệu và bằng chứng liên quan trước"
+      },
+      {
+        "id": "B",
+        "label": "Tiếp tục bỏ qua checkpoint và đoán kết quả"
+      },
+      {
+        "id": "C",
+        "label": "Chỉ sửa biểu hiện bên ngoài mà không kiểm tra nguyên nhân"
+      }
+    ],
+    "answer": "A",
+    "next_decision": "Bạn sẽ inspect file nào hoặc chạy kiểm tra nào tiếp theo?"
+  },
+  {
+    "case_id": "case_valid_alternative",
+    "type": "VALID_ALTERNATIVE",
+    "difficulty": 2,
+    "phase": "task_2_1",
+    "student_action": "Tôi đọc source trước rồi quay lại hoàn thiện task",
+    "expected_consequence": "Workflow khác thứ tự vẫn hợp lệ nếu đạt learning objective và có bằng chứng.",
+    "learning_objective": "Ra quyết định dựa trên bằng chứng của Lab và phục hồi sau sai lầm.",
+    "evidence": "docs/CODELAB.md, src/app.py, src/mcp_server.py, src/prompts.py",
+    "options": [
+      {
+        "id": "A",
+        "label": "Kiểm tra tài liệu và bằng chứng liên quan trước"
+      },
+      {
+        "id": "B",
+        "label": "Tiếp tục bỏ qua checkpoint và đoán kết quả"
+      },
+      {
+        "id": "C",
+        "label": "Chỉ sửa biểu hiện bên ngoài mà không kiểm tra nguyên nhân"
+      }
+    ],
+    "answer": "A",
+    "next_decision": "Bạn sẽ inspect file nào hoặc chạy kiểm tra nào tiếp theo?"
+  }
+]

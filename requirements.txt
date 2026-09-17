@@ -1,0 +1,2 @@
+# The MVP uses only the Python standard library.
+# Optional live providers can be enabled with OPENAI_API_KEY or GEMINI_API_KEY.
